@@ -30,7 +30,27 @@ class AiCodeService {
             ],
         });
     }
+    async getAllChats() {
+        const chatFiles = fs.readdirSync(this.chatHistoryPath);
+        return chatFiles.map((file) => {
+            const filePath = path.join(this.chatHistoryPath, file);
+            const stats = fs.statSync(filePath);
+            const chatHistory = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+            let lastMessage = chatHistory.length > 0 ? chatHistory[chatHistory.length - 1].text : null;
 
+            if(lastMessage && lastMessage.includes('```json')) {
+                lastMessage = lastMessage.replace('```json', '').replace('```', '');
+                lastMessage = JSON.parse(lastMessage);
+                lastMessage = lastMessage.description
+            }
+
+            return {
+            chatId: path.basename(file, '.json'),
+            lastModified: stats.mtime,
+            lastMessage: lastMessage,
+            };
+        });
+    }
     async startNewChat() {
         const chatId = `chat_${Date.now()}`;
         const chatHistory = [];
@@ -51,27 +71,27 @@ class AiCodeService {
     async sendMessage(chatId, message) {
         console.log('Chat ID:', chatId); // Log the chat ID
         console.log('Message:', message); // Log the message
-    
+
         const chatHistory = JSON.parse(
             fs.readFileSync(path.join(this.chatHistoryPath, `${chatId}.json`), 'utf-8')
         );
-    
+
         const chat = this.model.startChat({
             history: chatHistory.map(message => ({
                 role: message.role,
                 parts: [{ text: message.text }],
             })),
         });
-    
+
         const result = await chat.sendMessage(message);
         const aiResponse = await result.response.text();
         console.log(`AI: ${aiResponse}`);
         const json = JSON.parse(aiResponse.replaceAll('```json', '').replaceAll('```', ''));
-    
+
         // Update chat history
         chatHistory.push({ role: 'user', text: message });
         chatHistory.push({ role: 'model', text: aiResponse });
-    
+
         // Save chat history to file
         fs.writeFileSync(
             path.join(this.chatHistoryPath, `${chatId}.json`),
@@ -79,8 +99,8 @@ class AiCodeService {
         );
 
         await this.generateFiles(chatId, json);
-    
-        return { response: json, chatHistory , chatId };
+
+        return { response: json, chatHistory, chatId };
     }
 
     async generateFiles(chatId, data) {

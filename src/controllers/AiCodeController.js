@@ -3,6 +3,15 @@ class AiCodeController {
         this.aiCodeService = aiCodeService;
     }
 
+    async getAllChats(req, res) {
+        try {
+            const chats = await this.aiCodeService.getAllChats();
+            res.status(200).json(chats);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
     async startNewChat(req, res) {
         try {
             const { chatId, chatHistory } = await this.aiCodeService.startNewChat();
