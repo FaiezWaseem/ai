@@ -3,6 +3,8 @@ class AiCodeController {
         this.aiCodeService = aiCodeService;
     }
 
+
+
     async getAllChats(req, res) {
         try {
             const chats = await this.aiCodeService.getAllChats();
@@ -37,6 +39,15 @@ class AiCodeController {
             const { message } = req.body;
             const { response, chatHistory } = await this.aiCodeService.sendMessage(chatId, message);
             res.status(200).json({ response, chatHistory });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+    async updateChatName(req, res) {
+        try {
+            const { chatName } = req.body;
+            const r = await this.aiCodeService.saveChatName(chatId, chatName);
+            res.status(200).json(r);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

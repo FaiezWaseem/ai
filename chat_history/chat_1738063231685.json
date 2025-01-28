@@ -1,0 +1,10 @@
+[
+  {
+    "role": "user",
+    "text": "hi, create a simple angular momentum animation in html css js and fabricsjs"
+  },
+  {
+    "role": "model",
+    "text": "```json\n{\n  \"name\": \"Angular Momentum Animation\",\n  \"description\": \"A simple animation demonstrating angular momentum using HTML, CSS, JavaScript, and fabric.js.\",\n  \"technologies\": [\"HTML\", \"CSS\", \"JavaScript\", \"fabric.js\"],\n  \"installation\": [\n    \"1. Save the code as HTML file (e.g., index.html)\",\n    \"2. Open index.html in a web browser\"\n  ],\n  \"files\": [\n    \"index.html\"\n  ],\n  \"code\": {\n    \"index.html\": \"<!DOCTYPE html>\\n<html>\\n<head>\\n<title>Angular Momentum Animation</title>\\n<script src=\\\"https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js\\\"></script>\\n<style>\\nbody { margin: 0; overflow: hidden; }\\ncanvas { display: block; }\\n</style>\\n</head>\\n<body>\\n<canvas id=\\\"canvas\\\"></canvas>\\n<script>\\n  var canvas = new fabric.Canvas('canvas');\\n  canvas.setWidth(window.innerWidth);\\n  canvas.setHeight(window.innerHeight);\\n\\n  var circle = new fabric.Circle({\\n    radius: 50,\\n    fill: 'red',\\n    left: canvas.width / 2,\\n    top: canvas.height / 2\\n  });\\n\\n  canvas.add(circle);\\n\\n  var angle = 0;\\n  function animate() {\\n    angle += 0.05;\\n    circle.set({\\n      left: canvas.width / 2 + 150 * Math.cos(angle),\\n      top: canvas.height / 2 + 150 * Math.sin(angle)\\n    });\\n    canvas.renderAll();\\n    requestAnimationFrame(animate);\\n  }\\n\\n  animate();\\n</script>\\n</body>\\n</html>\"\n  }\n}\n```\n"
+  }
+]

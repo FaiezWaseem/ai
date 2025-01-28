@@ -43,11 +43,14 @@ class AiCodeService {
                 lastMessage = JSON.parse(lastMessage);
                 lastMessage = lastMessage.description
             }
+            const chatId = path.basename(file, '.json');
+            const chatNamePath = path.join(__dirname, '..', '..', 'chats', `${chatId}_name.txt`);
 
             return {
-                chatId: path.basename(file, '.json'),
+                chatId,
                 lastModified: stats.mtime,
                 lastMessage: lastMessage,
+                name: fs.existsSync(chatNamePath) ? fs.readFileSync(chatNamePath, 'utf-8') : null
             };
         });
     }
@@ -58,6 +61,9 @@ class AiCodeService {
             path.join(this.chatHistoryPath, `${chatId}.json`),
             JSON.stringify(chatHistory, null, 2)
         );
+
+        this.saveChatName(chatId, 'Chat '+chatId);
+
         return { chatId, chatHistory };
     }
 
@@ -130,6 +136,12 @@ class AiCodeService {
         });
 
         return { success: true, message: 'Files generated successfully.' };
+    }
+
+    async saveChatName(chatId, chatName) {
+        const chats = path.join(__dirname, '..', '..', 'chats');
+        fs.writeFileSync(path.join(chats, `${chatId}_name.txt`), chatName, 'utf-8');
+        return { success: true, message: 'Chat name saved successfully.', chatName, chatId };
     }
 }
 
