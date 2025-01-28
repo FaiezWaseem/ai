@@ -71,7 +71,13 @@ class AiCodeService {
         const chatHistory = JSON.parse(
             fs.readFileSync(path.join(this.chatHistoryPath, `${chatId}.json`), 'utf-8')
         );
-        return { chatId, chatHistory };
+        const chatNamePath = path.join(__dirname, '..', '..', 'chats', `${chatId}_name.txt`);
+        const name = fs.existsSync(chatNamePath) ? fs.readFileSync(chatNamePath, 'utf-8') : null
+
+        console.log('Chat ID:', chatId); // Log the chat ID
+        console.log('Chat History:', chatHistory); // Log the chat history
+        console.log('Chat Name Path:', name); // Log the chat name path
+        return { chatId, chatHistory , name };
     }
 
     async sendMessage(chatId, message) {

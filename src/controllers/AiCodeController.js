@@ -26,8 +26,8 @@ class AiCodeController {
     async continueChat(req, res) {
         try {
             const { chatId } = req.params;
-            const { chatId: id, chatHistory } = await this.aiCodeService.continueChat(chatId);
-            res.status(200).json({ chatId: id, chatHistory });
+            const { chatId: id, chatHistory  , name } = await this.aiCodeService.continueChat(chatId);
+            res.status(200).json({ chatId: id, chatHistory, name });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -45,6 +45,7 @@ class AiCodeController {
     }
     async updateChatName(req, res) {
         try {
+            const { chatId } = req.params;
             const { chatName } = req.body;
             const r = await this.aiCodeService.saveChatName(chatId, chatName);
             res.status(200).json(r);
